@@ -8,6 +8,7 @@ eth-hash==0.3.2
 eth-typing==2.2.2
 eth-utils==1.10.0
 Flask==2.1.2
+gunicorn==20.0.4
 idna==3.3
 itsdangerous==2.1.2
 Jinja2==3.1.2

@@ -46,7 +46,7 @@ def create_app():
     except OSError:
         pass
 
-    from . import db
+    from .. import db
     app.logger.info("Initiating db...")
     db.init_app(app)
 
