@@ -2,7 +2,7 @@ import os
 import json
 from flask import Flask, g, redirect, request, url_for
 from urllib.parse import urlencode, unquote
-from deuniv.db import get_db
+from deuniv.db import get_db, init_app
 from deuniv.service import parseUrlAndFetch
 
 def create_app():
@@ -45,9 +45,8 @@ def create_app():
         os.makedirs(app.instance_path)
     except OSError:
         pass
-
-    from .. import db
+    
     app.logger.info("Initiating db...")
-    db.init_app(app)
+    init_app(app)
 
     return app
