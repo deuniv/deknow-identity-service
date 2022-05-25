@@ -24,9 +24,10 @@ def convertToLanguage(url, lang="en"):
     parsedQuery = parse_qs(parsedUrl.query)
     if 'hl' in parsedQuery:
         newQuery = parsedUrl.query.replace("hl="+parsedQuery['hl'][0], "hl=en")
+        parsedUrl = parsedUrl._replace(query=newQuery)
     else:
         parsedQuery['hl'] = [lang]
-    parsedUrl = parsedUrl._replace(query=newQuery)
+        parsedUrl = parsedUrl._replace(query=parsedQuery)
     return urlunparse(parsedUrl)
 
 def parseUrlAndFetch(db, url):
