@@ -1,12 +1,25 @@
 import os
-import json
+import logging
 from flask import Flask, g, redirect, request, url_for
 from urllib.parse import urlencode, unquote
 from deuniv.db import get_db, init_app
 from deuniv.service import parseUrlAndFetch
 
 def create_app():
+    logFormatStr = '%(asctime)s-%(levelname)s-%(funcName)s(%(lineno)d)--->%(message)s'
+    logging.basicConfig(format = logFormatStr, filename = "dlog.log", level=logging.DEBUG)
+    formatter = logging.Formatter(logFormatStr,'%m-%d %H:%M:%S')
+    fileHandler = logging.FileHandler("summary.log")
+    fileHandler.setLevel(logging.DEBUG)
+    fileHandler.setFormatter(formatter)
+    streamHandler = logging.StreamHandler()
+    streamHandler.setLevel(logging.INFO)
+    streamHandler.setFormatter(formatter)    
+
     app = Flask(__name__, instance_relative_config=True)
+    app.logger.addHandler(fileHandler)
+    app.logger.addHandler(streamHandler)
+    app.logger.info("Logging is set up.")
     app.config.from_mapping(
         SECRET_KEY = "dev",
         DATABASE=os.path.join(app.instance_path, "deuniv.db")
@@ -39,6 +52,7 @@ def create_app():
         url = request.args.get("url", default=None)
         if url:
             url = unquote(url)
+        app.logger.info("URL Posted: {}".format(url))
         return parseUrlAndFetch(db, url)
     
     try:
@@ -46,7 +60,6 @@ def create_app():
     except OSError:
         pass
     
-    app.logger.info("Initiating db...")
     init_app(app)
 
     return app
