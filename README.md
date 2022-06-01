@@ -1,4 +1,4 @@
-# DeUniv - Scholar Service
+# DeKnow Identity Service
 
 Service that helps obtain data from Scholar. The service can be accessed at . Supports
 * Profiles - https://scholar.google.com/citations?user=H9sNlFYAAAAJ&hl=en&oi=sra
