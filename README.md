@@ -31,6 +31,7 @@ flask init-db
 
 ```
 flask run
+flask run -h localhost -p 3000
 ```
 
 Database and logs can be obtained from the ```/instance``` folder.
