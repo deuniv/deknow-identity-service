@@ -20,6 +20,13 @@ def getPubIdFromCitationsUrl(url=""):
             return pubId.split(",")[0].strip()
         return pubId
 
+def getPubIdFromPrimaryUrl(url=""):
+    parsedUrl = urlparse(url)
+    parsedQuery = parse_qs(parsedUrl.query)
+    if 'citation_for_view' in parsedQuery:
+        pubId = parsedQuery['citation_for_view'][0]
+        return pubId
+
 def convertToLanguage(url, lang="en"):
     # hl is a parameter that is passed to set the language of the returned page.
     # We can change it to work in a different langugage
@@ -97,13 +104,19 @@ def fetchArticleDetails(db, url=""):
             elif d in ["Source", "Volume", "Issue", "Pages", "Publisher"]:
                 if details[d] != "":
                     result["source"] = (result.get("source", "") + ", {}: {}".format(d, details[d]))
-        result["source"] = result["source"][2:].strip()
+        print(result)
+        if "source" in result:
+            result["source"] = result["source"][2:].strip()
     except Exception as e:
         current_app.logger.error(e)
         return returnError(e)
     
     if 'publication_id' not in result or result['publication_id'] == "":
+        publication_id = getPubIdFromPrimaryUrl(result["url_requested"])
+        print(publication_id)
+        if not publication_id:
             return returnError("PUBLICATION_ID_NOT_FOUND")
+        result['publication_id'] = publication_id
     
     writePublicationToDbFromArticle(db, result)
     return result
